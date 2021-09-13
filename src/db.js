@@ -1,6 +1,3 @@
-/**
- * A singleton implemetaion for the database
- */
 
 const mongoose = require('mongoose');
 const config = require('./config');
@@ -44,6 +41,7 @@ module.exports = (() => {
 	};
 
 	return {
+		//Singlenton instance
 		getInstance: () => {
 			if (!instance) {
 				instance = createInstance();

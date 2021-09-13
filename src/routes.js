@@ -5,7 +5,7 @@ const config = require('./config');
 const model = require('./model');
 const validators = require('./validators');
 
-router.get(config.baseUrl + '_meta/:boxId', model.xmeta);
+router.get(config.baseUrl + '_meta/:boxId', model.meta);
 
 // list of all validators to be in place
 router.use(validators.removeNativeKeys);
@@ -16,10 +16,10 @@ router.use(validators.validateParams);
 router.use(validators.authenticateRequest);
 
 // only 100 POST requests are allowed in x's minutes window (rate limit)
-router.post(config.baseUrl + '*', rateLimit({ windowMs: config.WINDOW_MS, max: config.MAX_RATE }), model.xpost);
-router.get(config.baseUrl + '*', model.xget);
-router.put(config.baseUrl + '*', model.xput);
-router.delete(config.baseUrl + '*', model.xdelete);
+router.post(config.baseUrl + '*', rateLimit({ windowMs: config.WINDOW_MS, max: config.MAX_RATE }), model.post);
+router.get(config.baseUrl + '*', model.get);
+router.put(config.baseUrl + '*', model.put);
+router.delete(config.baseUrl + '*', model.delete);
 
 /**
  * DATA endpoint's common error handling middleware

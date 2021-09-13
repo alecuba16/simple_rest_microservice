@@ -1,8 +1,8 @@
-const helper = require('./helper');
+const utils = require('./utils');
 const Data = require('./db').getInstance();
 const config = require('./config');
 
-const xpost = async (req, res, next) => {
+const post = async (req, res, next) => {
 	try {
 		const createRecord = async body => {
 			const date = new Date();
@@ -13,7 +13,7 @@ const xpost = async (req, res, next) => {
 			record['data'] = body;
 
 			const newRecord = await new Data(record).save();
-			return helper.responseBody(newRecord, req.collection);
+			return utils.responseBody(newRecord, req.collection);
 		};
 
 		if (Array.isArray(req.body)) {
@@ -29,11 +29,11 @@ const xpost = async (req, res, next) => {
 	}
 };
 
-const xget = async (req, res, next) => {
+const get = async (req, res, next) => {
 	try {
 		if (req.recordId) {
 			const record = await Data.findOne({ _id: req.recordId, _box: req.box }).exec();
-			res.json(helper.responseBody(record, req.collection));
+			res.json(utils.responseBody(record, req.collection));
 		} else {
 			const skip = req.query.skip ? +req.query.skip : 0;
 
@@ -46,7 +46,7 @@ const xget = async (req, res, next) => {
 			}
 
 			let query = {};
-			if (req.query.q) query = helper.parse_query(req.query.q);
+			if (req.query.q) query = utils.parse_query(req.query.q);
 
 			query['_box'] = req.box;
 			if (req.collection) query['_collection'] = req.collection;
@@ -56,13 +56,13 @@ const xget = async (req, res, next) => {
 				.limit(limit)
 				.sort(sort)
 				.exec();
-			res.json(records.map(r => helper.responseBody(r, req.collection)));
+			res.json(records.map(r => utils.responseBody(r, req.collection)));
 		}
 	} catch (error) {
 		next(error);
 	}
 };
-const xput = async (req, res, next) => {
+const put = async (req, res, next) => {
 	try {
 		const record = await Data.findOne({ _id: req.recordId, _box: req.box }).exec();
 		if (record) {
@@ -81,7 +81,7 @@ const xput = async (req, res, next) => {
 		next(error);
 	}
 };
-const xdelete = async (req, res, next) => {
+const delete = async (req, res, next) => {
 	try {
 		if (req.recordId) {
 			const record = await Data.findOne({ _id: req.recordId, _box: req.box }).exec();
@@ -93,7 +93,7 @@ const xdelete = async (req, res, next) => {
 				res.status(400).json({ message: 'Invalid record Id' });
 			}
 		} else if (req.query.q) {
-			const query = helper.parse_query(req.query.q);
+			const query = utils.parse_query(req.query.q);
 			query['_box'] = req.box;
 
 			const result = await Data.deleteMany(query);
@@ -104,7 +104,7 @@ const xdelete = async (req, res, next) => {
 	}
 };
 
-const xmeta = async (req, res, next) => {
+const meta = async (req, res, next) => {
 	try {
 		let query = {};
 		query['_box'] = req.params.boxId;
@@ -120,7 +120,7 @@ const xmeta = async (req, res, next) => {
 		];
 
 		const result = {};
-		Promise.all(promises).then(function(values) {
+		Promise.all(promises).then(function (values) {
 			result['_count'] = values[0];
 
 			if (values[0] > 0) {
@@ -141,9 +141,9 @@ const xmeta = async (req, res, next) => {
 };
 
 module.exports = {
-	xpost,
-	xget,
-	xput,
-	xdelete,
-	xmeta
+	post,
+	get,
+	put,
+	delete,
+	meta
 };
