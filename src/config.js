@@ -1,6 +1,6 @@
 module.exports = {
 	PORT: process.env.PORT || 3000,
-	MONGO_URL: process.env.MONGODB_URI || 'mongodb://localhost:27017/jsonbox',
+	MONGO_URL: process.env.MONGODB_URI || 'mongodb://localhost:27017/jsonmicroservice',
 	BOXID_MIN_LENGTH: 3,
 	baseUrl: '/',
 	API_KEY_ALL: 'YOUR PUBLIC API KEY (only get)',
