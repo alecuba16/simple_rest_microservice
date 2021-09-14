@@ -1,4 +1,3 @@
-//jsonbox
 const bodyParser = require("body-parser");
 const express = require("express");
 const path = require("path");
